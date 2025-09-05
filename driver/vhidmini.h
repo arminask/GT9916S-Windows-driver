@@ -41,7 +41,7 @@ Environment:
 #define GOODIX_SPI_READ         0xF1
 #define GOODIX_SPI_WRITE        0xF0
 #define ISP_RAM_ADDR			0x18400
-#define TOUCH_INFO_ADDR         0x10338
+#define TOUCH_INFO_ADDR         0x10308
 #define CMD_ADDR                0x10180
 #define TOUCH_POOL_TAG          (ULONG)'dooG'
 
