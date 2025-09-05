@@ -229,7 +229,7 @@
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc;..</AdditionalIncludeDirectories>
       <ExceptionHandling>
       </ExceptionHandling>
-      <WppEnabled>false</WppEnabled>
+      <WppEnabled>true</WppEnabled>
       <WppTraceFunction>
       </WppTraceFunction>
       <WppScanConfigurationData>trace.h</WppScanConfigurationData>
@@ -237,6 +237,7 @@
       <WppRecorderEnabled>true</WppRecorderEnabled>
       <WppAdditionalIncludeDirectories>
       </WppAdditionalIncludeDirectories>
+      <WppMinimalRebuildFromTracking>false</WppMinimalRebuildFromTracking>
     </ClCompile>
     <Midl>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);_UNICODE;UNICODE;POOL_NX_OPTIN=1</PreprocessorDefinitions>
