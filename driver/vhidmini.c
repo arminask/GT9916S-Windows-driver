@@ -17,6 +17,8 @@ Environment:
 --*/
 #include "vhidmini.h"
 
+#define DEBUG
+
 #ifdef DEBUG
 #include "kmdf/trace.h"
 #include "vhidmini.tmh"
@@ -445,17 +447,30 @@ Return Value:
 #ifdef DEBUG
     WPP_INIT_TRACING(DriverObject, RegistryPath);
 #endif
+#ifdef DEBUG
+    TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "George Droid on command. :D");
+#endif
 #ifdef _KERNEL_MODE
     //
     // Opt-in to using non-executable pool memory on Windows 8 and later.
     // https://msdn.microsoft.com/en-us/library/windows/hardware/hh920402(v=vs.85).aspx
     //
     ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
+#ifdef DEBUG
+    TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Kernel Mode.");
+#endif
 #endif
 
     WDF_DRIVER_CONFIG_INIT(&config, EvtDeviceAdd);
 
+#ifdef DEBUG
+    TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Driver Init.");
+#endif
+
     WDF_OBJECT_ATTRIBUTES_INIT(&driverAttributes);
+#ifdef DEBUG
+    TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Attributes Init.");
+#endif
     driverAttributes.EvtCleanupCallback = EvtDriverCleanup;
 
     status = WdfDriverCreate(DriverObject,
