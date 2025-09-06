@@ -2078,37 +2078,43 @@ OnInterruptIsr(
 #endif
         touch_count = 10;
     }
+    else if (touch_count > 0) {
+#ifdef DEBUG
+        TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Touch Point(s): %d.", touch_count);
+#endif
+    }
 
     GoodixRead(pDevice, TOUCH_INFO_ADDR + 8, touchBuf, 10 + BYTES_PER_COORD * (touch_count - 1));
 
     switch(touch_count)
     {
-    case 0:
-        // All points leave
-        readReport.points[0] = 0x06;
-        readReport.points[1] = pDevice->LastTouchID;
-        readReport.DIG_TouchScreenContactCount = 1;
+        case 0: {
+            // All points leave
+            readReport.points[0] = 0x06;
+            readReport.points[1] = pDevice->LastTouchID;
+            readReport.DIG_TouchScreenContactCount = 1;
 #ifdef DEBUG
-        TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Point Leave X:%d, Y:%d", x, y);
+            TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Point Leave X:%d, Y:%d", x, y);
 #endif
-        break;
-
-    default:
-        for (UINT8 i = 0; i < touch_count; i++)
-        {
-            touchId = ((touchBuf[0 + i * 8] >> 4) & 0x0F);
-            x = (touchBuf[3 + i * 8] << 8) | touchBuf[2 + i * 8];
-            y = (touchBuf[5 + i * 8] << 8) | touchBuf[4 + i * 8];
-            readReport.points[i * 6 + 0] = 0x07;  // In Point
-            readReport.points[i * 6 + 1] = touchId;
-            readReport.points[i * 6 + 2] = x & 0xFF;
-            readReport.points[i * 6 + 3] = (x >> 8) & 0x0F;
-            readReport.points[i * 6 + 4] = y & 0xFF;
-            readReport.points[i * 6 + 5] = (y >> 8) & 0x0F;
+            break;
+        }
+        default: {
+            for (UINT8 i = 0; i < touch_count; i++)
+            {
+                touchId = ((touchBuf[0 + i * 8] >> 4) & 0x0F);
+                x = ((touchBuf[3 + i * 8] << 8) | touchBuf[2 + i * 8]) / 0x10;
+                y = ((touchBuf[5 + i * 8] << 8) | touchBuf[4 + i * 8]) / 0x10;
+                readReport.points[i * 6 + 0] = 0x07;  // In Point
+                readReport.points[i * 6 + 1] = touchId;
+                readReport.points[i * 6 + 2] = x & 0xFF;
+                readReport.points[i * 6 + 3] = (x >> 8) & 0x0F;
+                readReport.points[i * 6 + 4] = y & 0xFF;
+                readReport.points[i * 6 + 5] = (y >> 8) & 0x0F;
 #ifdef DEBUG
-            TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Touch %d X:%d, Y:%d", touchId + 1, x, y);
-            TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Touch %d Buffer %x %x %x %x %x %x %x %x", touchId + 1, touchBuf[0 + i * 8], touchBuf[1 + i * 8], touchBuf[2 + i * 8], touchBuf[3 + i * 8], touchBuf[4 + i * 8], touchBuf[5 + i * 8], touchBuf[6 + i * 8], touchBuf[7 + i * 8]);
+                TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Touch %d X:%d, Y:%d", touchId + 1, x, y);
+                TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "Touch %d Buffer %x %x %x %x %x %x %x %x", touchId + 1, touchBuf[0 + i * 8], touchBuf[1 + i * 8], touchBuf[2 + i * 8], touchBuf[3 + i * 8], touchBuf[4 + i * 8], touchBuf[5 + i * 8], touchBuf[6 + i * 8], touchBuf[7 + i * 8]);
 #endif
+            }
         }
     }
 
@@ -2142,12 +2148,12 @@ GoodixRead(
 {
     PUINT8 TxBuf = (PUINT8)ExAllocatePool2(
         POOL_FLAG_NON_PAGED,
-        9 + readLen,
+        8 + readLen,
         TOUCH_POOL_TAG
     );
     PUINT8 RxBuf = (PUINT8)ExAllocatePool2(
         POOL_FLAG_NON_PAGED,
-        9 + readLen,
+        8 + readLen,
         TOUCH_POOL_TAG
     );
 
@@ -2159,11 +2165,10 @@ GoodixRead(
     TxBuf[5] = 0xFF;
     TxBuf[6] = 0xFF;
     TxBuf[7] = 0xFF;
-    TxBuf[8] = 0xFF;
 
-    SpbDeviceWriteRead(pDevice, TxBuf, RxBuf, 9 + readLen, 9 + readLen);
+    SpbDeviceWriteRead(pDevice, TxBuf, RxBuf, 8 + readLen, 8 + readLen);
 
-    RtlCopyMemory(readBuf, &RxBuf[9], readLen);
+    RtlCopyMemory(readBuf, &RxBuf[8], readLen);
 
     ExFreePoolWithTag(TxBuf, TOUCH_POOL_TAG);
     ExFreePoolWithTag(RxBuf, TOUCH_POOL_TAG);
