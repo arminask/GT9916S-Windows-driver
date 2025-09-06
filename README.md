@@ -10,8 +10,8 @@ products:
 
 # Description
 
-This driver is intended for Goodix GT9897T SPI touchscreens commonly found in Xiaomi 11 Lite 5G NE. It does not contain any firmware upgrading/loading functionality, nor does it support any Xiaomi features, gestures etc.
-Credits to Nikroks for fixing GoodixRead and helping during development.
+This driver is intended for Goodix GT9916R SPI touchscreens commonly found in RedMagic 8 Pro and RedMagic 8S Pro. It does not contain any firmware upgrading/loading functionality, nor does it support any additional features from OEM, gestures etc.
+Credits to Nikroks and Aistop.
 Forked from https://github.com/Project-Aloha/gtx9886-driver.
 
 # HID Minidriver Sample (UMDF version 2)
