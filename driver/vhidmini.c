@@ -447,9 +447,6 @@ Return Value:
 #ifdef DEBUG
     WPP_INIT_TRACING(DriverObject, RegistryPath);
 #endif
-#ifdef DEBUG
-    TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICE, "George Droid on command. :D");
-#endif
 #ifdef _KERNEL_MODE
     //
     // Opt-in to using non-executable pool memory on Windows 8 and later.
@@ -2102,8 +2099,8 @@ OnInterruptIsr(
             for (UINT8 i = 0; i < touch_count; i++)
             {
                 touchId = ((touchBuf[0 + i * 8] >> 4) & 0x0F);
-                x = ((touchBuf[3 + i * 8] << 8) | touchBuf[2 + i * 8]) / 0x10;
-                y = ((touchBuf[5 + i * 8] << 8) | touchBuf[4 + i * 8]) / 0x10;
+                x = ((touchBuf[3 + i * 8] << 8) | touchBuf[2 + i * 8]);
+                y = ((touchBuf[5 + i * 8] << 8) | touchBuf[4 + i * 8]);
                 readReport.points[i * 6 + 0] = 0x07;  // In Point
                 readReport.points[i * 6 + 1] = touchId;
                 readReport.points[i * 6 + 2] = x & 0xFF;
